@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+    font-family: "Specify";
+    src: url("/fonts/SpecifyPERSONAL-ExExpBold.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "BeauSans";
+    src: url("/fonts/BT-BeauSans-Light-BF64d4595396c6d.ttf") format("truetype");
+    font-weight: 900;
+    font-style: normal;
+}
+
+.scrollbar-vanish::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-vanish {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-fade-out {
+    animation: fade-out 0.3s ease-out forwards;
+}
+
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #a0aec0 #edf2f7;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 12px; /* Increase width */
+    height: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #edf2f7;
+    border-radius: 10px; /* Add rounding to the track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #a0aec0;
+    border-radius: 10px; /* Add rounding to the thumb */
+    border: 3px solid #edf2f7; /* Creates padding around the thumb */
+}
