@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import {
     Badge,
     Button,
@@ -7,6 +6,7 @@ import {
     Form,
     FormInstance,
     GetProp,
+    Image,
     Input,
     InputNumber,
     Select,
@@ -14,14 +14,11 @@ import {
     Upload,
     UploadFile,
     UploadProps,
-    Image,
-    Col,
 } from "antd";
+import { useEffect, useState } from "react";
+import { FaTrash } from "react-icons/fa";
 import { IVariant } from "../../types";
 const { Option } = Select;
-import { toDataURL, dataURLtoFile } from "../../utils";
-import { EModal } from "../../pages/product/Product";
-import { FaTrash } from "react-icons/fa";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 type TProps = {

@@ -8,11 +8,8 @@ const CustomError = require('../errors/CustomError')
 
 // convert to vietnam timezone
 function convertDateTime(date) {
-    const getTime = date.getTime();
-    const vietnamTimeZone = 7 * 60 * 60 * 1000; // UTC+7 
+    return new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
 
-    const vietnamTime = new Date(getTime + vietnamTimeZone);
-    return vietnamTime;
 }
 
 async function getDetailsOfReports(transactions) {
@@ -79,19 +76,26 @@ async function getDetailsOfReports(transactions) {
     return result;
 }
 
-
-
 exports.getTransactionToday = async () => {
     try {
-        const today = convertDateTime(new Date());
-        const yesterday = new Date(today);
-        // setup time
-        yesterday.setDate(today.getDate() - 1);
-        yesterday.setHours(17, 0, 0, 0);
-        today.setHours(16, 59, 59, 999);
+        const vietnamToday = convertDateTime(new Date());
 
-        const transactions = await TransactionModel.findTransactionsByDateRange(yesterday, today);
-        const reports = await getDetailsOfReports(transactions)
+        const startOfToday = new Date(vietnamToday);
+        startOfToday.setHours(0, 0, 0, 0);
+
+        const endOfToday = new Date(vietnamToday);
+
+        console.log('Start of Today:', startOfToday.toISOString());
+        console.log('End of Today:', endOfToday.toISOString());
+
+        const transactions = await TransactionModel.find({
+            purchaseDate: {
+                $gte: startOfToday,
+                $lte: endOfToday
+            }
+        });
+
+        const reports = await getDetailsOfReports(transactions);
         return reports;
     } catch (err) {
         return new CustomError(err.message);
@@ -100,23 +104,20 @@ exports.getTransactionToday = async () => {
 
 exports.getTransactionYesterday = async () => {
     try {
-        const vietnamToday = convertDateTime(new Date());  
+        const vietnamToday = convertDateTime(new Date());
 
-        const yesterday = new Date(vietnamToday);
-        const beforeYesterday = new Date(vietnamToday);
+        const startOfYesterday = new Date(vietnamToday);
+        startOfYesterday.setDate(vietnamToday.getDate() - 1);
+        startOfYesterday.setHours(0, 0, 0, 0);
 
-        yesterday.setDate(yesterday.getDate() - 1);
-        beforeYesterday.setDate(yesterday.getDate() - 1);
+        const endOfYesterday = new Date(vietnamToday);
+        endOfYesterday.setDate(vietnamToday.getDate() - 1);
+        endOfYesterday.setHours(23, 59, 59, 999);
 
-        yesterday.setUTCHours(16, 59, 59, 999); 
-        beforeYesterday.setUTCHours(17, 0, 0, 0); 
+        console.log('Start of Yesterday:', startOfYesterday.toISOString());
+        console.log('End of Yesterday:', endOfYesterday.toISOString());
 
-        console.log('Before Yesterday:', beforeYesterday.toISOString());
-        console.log('Yesterday:', yesterday.toISOString());
-
-        const transactions = await TransactionModel.findTransactionsByDateRange(beforeYesterday, yesterday);
-        console.log('Transactions:', transactions);
-
+        const transactions = await TransactionModel.findTransactionsByDateRange(startOfYesterday, endOfYesterday);
         const reports = await getDetailsOfReports(transactions);
         return reports;
     } catch (err) {
@@ -126,77 +127,97 @@ exports.getTransactionYesterday = async () => {
 
 exports.getTransactionWithinTheLast7Days = async () => {
     try {
-        const today = convertDateTime(new Date());
-        const aWeekAgo = new Date(today);
-        // setup time
-        aWeekAgo.setDate(aWeekAgo.getDate() - 7);
-        aWeekAgo.setUTCHours(17, 0, 0, 0);
-        today.setUTCHours(16, 59, 59, 999);
+        const vietnamToday = convertDateTime(new Date());
 
-        const transactions = await TransactionModel.findTransactionsByDateRange(aWeekAgo, today);
-        const reports = await getDetailsOfReports(transactions)
+        const startOf7DaysAgo = new Date(vietnamToday);
+        startOf7DaysAgo.setDate(vietnamToday.getDate() - 7);
+        startOf7DaysAgo.setHours(0, 0, 0, 0);
+
+        const endOfToday = new Date(vietnamToday);
+
+        console.log('Start of Last 7 Days:', startOf7DaysAgo.toISOString());
+        console.log('End of Today:', endOfToday.toISOString());
+
+        const transactions = await TransactionModel.findTransactionsByDateRange(startOf7DaysAgo, endOfToday);
+        const reports = await getDetailsOfReports(transactions);
         return reports;
     } catch (err) {
         return new CustomError(err.message);
     }
 };
+
+
+exports.getTransactionThisMonth = async () => {
+    try {
+        const vietnamToday = convertDateTime(new Date());
+
+        const startOfMonth = new Date(vietnamToday.getFullYear(), vietnamToday.getMonth(), 1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const endOfToday = new Date(vietnamToday);
+
+        console.log('Start of Month:', startOfMonth.toISOString());
+        console.log('End of Today:', endOfToday.toISOString());
+
+        const transactions = await TransactionModel.findTransactionsByDateRange(startOfMonth, endOfToday);
+        const reports = await getDetailsOfReports(transactions);
+        return reports;
+    } catch (err) {
+        return new CustomError(err.message);
+    }
+};
+
 
 exports.getTransactionByDateRange = async (startDate, endDate) => {
     try {
         const start = convertDateTime(new Date(startDate));
         const end = convertDateTime(new Date(endDate));
-        
-        start.setUTCHours(17, 0, 0, 0); 
-        end.setUTCHours(16, 59, 59, 999);
-        
+
+        start.setHours(0, 0, 0, 0);
+
+        end.setHours(23, 59, 59, 999);
+
+        console.log('Start Date:', start.toISOString());
+        console.log('End Date:', end.toISOString());
+
         const transactions = await TransactionModel.findTransactionsByDateRange(start, end);
         const reports = await getDetailsOfReports(transactions);
-        
+
         return reports;
     } catch (err) {
         return new CustomError(err.message);
     }
 };
 
-exports.getTransactionThisMonth = async () => {
-    try {
-        const today = convertDateTime(new Date());
-        
-        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-        startOfMonth.setUTCHours(17, 0, 0, 0);
-
-        today.setUTCHours(16, 59, 59, 999);
-
-        const transactions = await TransactionModel.findTransactionsByDateRange(startOfMonth, today);
-
-        const reports = await getDetailsOfReports(transactions);
-        return reports;
-    } catch (err) {
-        return new CustomError(err.message);
-    }
-};
 
 exports.getTransactionsByDate = async (date) => {
-    const vietnamDate = convertDateTime(new Date(date));
-    const startOfDay = new Date(vietnamDate);
-    startOfDay.setUTCHours(17, 0, 0, 0);
-    startOfDay.setUTCDate(startOfDay.getUTCDate() - 1);
-    const endOfDay = new Date(vietnamDate);
-    endOfDay.setUTCHours(16, 59, 59, 999);
-    console.log(startOfDay)
-    console.log(endOfDay)
+    try {
+        const vietnamDate = convertDateTime(new Date(date));
 
-    const transactions = await TransactionModel.find({
-        purchaseDate: { $gte: startOfDay, $lte: endOfDay }
-    }).populate('Customer', 'name')
-      .populate('Staff', 'name')
-      .lean();
-    console.log(transactions)
-    for (const transaction of transactions) {
-        const productTransactions = await ProductTransactionModel.find({ Transaction: transaction._id }).populate('Variant');
+        const startOfDay = new Date(vietnamDate);
+        startOfDay.setHours(0, 0, 0, 0);
 
-        transaction.numOfProductsSold = productTransactions.reduce((sum, pt) => sum + pt.quantity, 0);
+        const endOfDay = new Date(vietnamDate);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        console.log('Start of Day:', startOfDay.toISOString());
+        console.log('End of Day:', endOfDay.toISOString());
+
+        const transactions = await TransactionModel.find({
+            purchaseDate: { $gte: startOfDay, $lte: endOfDay }
+        }).populate('Customer', 'name')
+          .populate('Staff', 'name')
+          .lean();
+
+        for (const transaction of transactions) {
+            const productTransactions = await ProductTransactionModel.find({ Transaction: transaction._id }).populate('Variant');
+
+            transaction.numOfProductsSold = productTransactions.reduce((sum, pt) => sum + pt.quantity, 0);
+        }
+
+        return transactions;
+    } catch (err) {
+        return new CustomError(err.message);
     }
+};
 
-    return transactions;
-}

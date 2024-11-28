@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import PasswordChangeForm from "../../components/Profile/PasswordChangeForm ";
 import { IoArrowBackCircle, IoCamera } from "react-icons/io5";
-import { Button, GetProp, Input, message, Upload, UploadProps } from "antd";
+import { Avatar, Button, GetProp, Input, message, Upload, UploadProps } from "antd";
 import usePrivateAxios from "../../hooks/usePrivateAxios";
+import { FaUser } from "react-icons/fa";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -46,7 +47,6 @@ export default function Profile() {
         setName(auth?.name || "");
         setImageUrl(auth?.avatar ? `${base_url}/${auth.avatar}` : "");
     }, [auth?.name, auth?.avatar]);
-
 
     const handleShowMore = () => {
         setShowMore(!showMore);
@@ -101,7 +101,6 @@ export default function Profile() {
                 />
             </div>
 
-
             <div className="w-2/3 bg-white rounded-2xl shadow-lg overflow-hidden h">
                 {/* Banner Image */}
                 <div
@@ -124,10 +123,11 @@ export default function Profile() {
                             >
                                 <div className="relative w-24 h-24">
                                     {imageUrl ? (
-                                        <img
+                                        <Avatar
                                             src={imageUrl}
-                                            alt="avatar"
+                                            icon={<FaUser />}
                                             style={{
+                                                background: "grey",
                                                 width: "100%",
                                                 height: "100%",
                                                 borderRadius: "100%",
@@ -146,14 +146,12 @@ export default function Profile() {
                                             }}
                                         />
                                     )}
-
                                 </div>
                             </Upload>
                             <div className="absolute z-10 -bottom-0 -right-3 transform -translate-x-1/2 bg-black bg-opacity-50 rounded-full p-2">
                                 <IoCamera size={18} color="white" />
                             </div>
                         </div>
-
 
                         {/* Name and Role */}
                         <div className="ml-2 mb-4">
@@ -193,7 +191,6 @@ export default function Profile() {
                                         onChange={(e) => setName(e.target.value)}
                                     />
                                 </div>
-
                             </div>
                             <div className="flex justify-end">
                                 <Button
@@ -212,7 +209,6 @@ export default function Profile() {
 
                     {/* Follower and Connection Counts */}
                     <PasswordChangeForm />
-
                 </div>
             </div>
         </div>

@@ -19,6 +19,7 @@ import Customer from "./pages/customer/Customer";
 import ExecuteTransaction from "./pages/transaction/ExecuteTransaction";
 import Profile from "./pages/profile/Profile";
 import DetailTransaction from "./pages/dashboard/DetailTransaction";
+import StaffTransaction from "./pages/account/StaffTransaction";
 
 const ROLES = {
     STAFF: 1,
@@ -41,6 +42,10 @@ function App() {
                         </Route>
                         <Route element={<Authorized allowedRoles={[ROLES.Admin]} />}>
                             <Route path="account" element={<Account />} />
+                            <Route
+                                path="staff/:staffId/transactions"
+                                element={<StaffTransaction />}
+                            />
                         </Route>
                         <Route element={<Authorized allowedRoles={[ROLES.Admin]} />}>
                             <Route path="product" element={<Product />} />

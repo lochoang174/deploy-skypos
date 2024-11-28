@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ProductHeader, AccountHeader, DashboardHeader, TransactionHeader, CustomerHeader, CustomerTransactionHeader } from "../Headers";
+import { ProductHeader, AccountHeader, DashboardHeader, TransactionHeader, CustomerHeader, CustomerTransactionHeader, StaffTransactionHeader } from "../Headers";
 import VariantHeader from "../Headers/VariantHeader";
 import DetailTransactionHeader from "../Headers/DetailTransactionHeader";
+import usePrivateAxios from "../../hooks/usePrivateAxios";
 const items: MenuProps["items"] = [
     {
         label: "Profile",
@@ -22,7 +23,7 @@ const Header = () => {
     const { auth, setAuth } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-
+    const axios = usePrivateAxios()
     useEffect(() => {
         console.log(`${base_url + "/" + auth?.avatar}`);
     }, []);
@@ -30,6 +31,7 @@ const Header = () => {
         if (e.key === "0") {
             navigate("/profile");
         } else if (e.key === "3") {
+            axios.post("/auth/logout")
             localStorage.clear();
             setAuth(null);
             window.location.reload();
@@ -56,6 +58,9 @@ const Header = () => {
                 if (/^\/home\/customer\/[a-fA-F0-9]{24}\/transactions$/.test(location.pathname)) {
                     // Matches URLs like /home/customer/672066db483c290febafd03d/transactions
                     return <CustomerTransactionHeader />;
+                } else if (/^\/home\/staff\/[a-fA-F0-9]{24}\/transactions$/.test(location.pathname)) {
+                    // Matches URLs like /home/customer/672066db483c290febafd03d/transactions
+                    return <StaffTransactionHeader />;
                 } else if (/^\/home\/variant\/product\/[a-fA-F0-9]{24}$/.test(location.pathname)) {
                     // Matches URLs like /home/variant/product/670d3e7b80c9f77da834c55c
                     return <VariantHeader />;

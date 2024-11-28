@@ -48,6 +48,8 @@ export const fetchCustomerTransactions = createAsyncThunk<
       const response = await axiosInstance.get(`/transaction/customer/${customerId}`,
         { params: { page, limit, staffName } }
       );
+
+      console.log("API Response:", response.data);
       return response.data.data as TransactionsPayLoad;
     } catch (err: any) {
       console.error('Error:', err);

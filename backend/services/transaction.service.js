@@ -6,7 +6,7 @@ const VariantModel = require('../models/Variant')
 const CustomError = require('../errors/CustomError')
 // const { populate } = require('../models/Account')
 const moment = require('moment');
-
+const mongoose = require("mongoose")
 function formatDate(isoDate) {
     return moment(isoDate).format('HH:mm:ss DD-MM-YYYY');
 }
@@ -154,7 +154,7 @@ exports.listTransactionsByCustomer = async (customerId, page, limit, staffName) 
 
         return {
             transactionList: transactions.map(transaction => ({
-                transactionId: transaction._id,
+                _id: transaction._id,
                 totalAmount: transaction.totalAmount,
                 purchaseDate: formatDate(transaction.purchaseDate),
                 customerName: transaction.Customer ? transaction.Customer.name : 'Unknown',
@@ -180,10 +180,16 @@ exports.listTransactionsByStaff = async (staffId, page, limit) => {
             .lean();
 
         const totalTransactions = await TransactionModel.countDocuments({ Staff: staffId });
+        const totalRevenueResult = await TransactionModel.aggregate([
+            { $match: { Staff: new mongoose.Types.ObjectId(staffId) } }, 
+            { $group: { _id: null, totalRevenue: { $sum: "$totalAmount" } } }
+        ]);
+
+        const totalRevenue = totalRevenueResult.length > 0 ? totalRevenueResult[0].totalRevenue : 0;
 
         return {
             transactionList: transactions.map(transaction => ({
-                transactionId: transaction._id,
+                _id: transaction._id,
                 totalAmount: transaction.totalAmount,
                 purchaseDate: formatDate(transaction.purchaseDate),
                 customerName: transaction.Customer ? transaction.Customer.name : 'Unknown',
@@ -192,6 +198,7 @@ exports.listTransactionsByStaff = async (staffId, page, limit) => {
             currentPage: page,
             totalPages: Math.ceil(totalTransactions / limit),
             totalTransactions,
+            totalRevenue,
         };
     } catch (error) {
         throw new Error('Error fetching transactions by staff: ' + error.message);
@@ -298,11 +305,16 @@ exports.getTransactionById = async (id) => {
         const productTransactions = await ProductTransactionModel.find({ Transaction: id })
             .populate({
                 path: 'Variant',
-                select: 'retailPrice color ram storage images'
+                populate: {
+                    path: 'Product', 
+                    select: 'productName'
+                },
+                select: 'retailPrice color ram storage images barcode'
             })
             .lean();
 
         transaction.products = productTransactions.map((productTransaction) => ({
+            // productName: productTransaction.Variant?.Product?.productName,
             productDetails: productTransaction.Variant,
             quantity: productTransaction.quantity,
             total: productTransaction.total

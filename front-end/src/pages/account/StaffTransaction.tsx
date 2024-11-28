@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { fetchCustomerTransactions } from '../../redux/reducer-type/CustomerTransactionsReducer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { fetchStaffTransactions } from '../../redux/reducer-type/StaffTransactionReducer';
+import { useParams } from 'react-router-dom';
 import { Button, Pagination, Space, Table, TableColumnsType, TablePaginationConfig } from 'antd';
 import usePrivateAxios from '../../hooks/usePrivateAxios';
 import { ITransaction } from '../../types';
-import { setPagination } from '../../redux/reducer-type/CustomerTransactionsReducer';
+import { setPagination } from '../../redux/reducer-type/StaffTransactionReducer';
 import { GrView } from 'react-icons/gr';
 import DetailTransactionModal from "../../components/Dashboard/DetailTransactionModal";
 
-const CustomerTransaction = () => {
+const StaffTransaction = () => {
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(true);
     const [isModalOpen, setIsModalOpen] = useState(false); // Quản lý modal
     const [selectedTransactionId, setSelectedTransactionId] = useState<string>(""); // Lưu transaction ID
 
-    const { customerId } = useParams();
+    const { staffId } = useParams();
     const { transactions, totalTransactions, pagination, searchTerm } = useAppSelector(
-        (state) => state.customerTransaction
+        (state) => state.staffTransaction
     );
     const axios = usePrivateAxios();
 
@@ -26,14 +26,14 @@ const CustomerTransaction = () => {
         if (searchTerm) {
             setLoading(true);
         }
-        if (customerId) {
+        if (staffId) {
             dispatch(
-                fetchCustomerTransactions({
-                    customerId,
+                fetchStaffTransactions({
+                    staffId,
                     axiosInstance: axios,
                     page: pagination.current!,
                     limit: pagination.pageSize!,
-                    staffName: searchTerm,
+                    customerName: searchTerm,
                 })
             )
                 .unwrap()
@@ -45,7 +45,7 @@ const CustomerTransaction = () => {
                     setLoading(false);
                 });
         }
-    }, [customerId, dispatch, axios, searchTerm, pagination]);
+    }, [staffId, dispatch, axios, searchTerm, pagination]);
 
     const handleViewDetailTransaction = (transactionId: string) => {
         setSelectedTransactionId(transactionId); // Lưu ID của giao dịch cần xem chi tiết
@@ -55,12 +55,12 @@ const CustomerTransaction = () => {
     const handlePageChange = (page: number, pageSize: number) => {
         dispatch(setPagination({ page, pageSize }));
         dispatch(
-            fetchCustomerTransactions({
+            fetchStaffTransactions({
                 axiosInstance: axios,
                 limit: pageSize,
                 page: page,
-                staffName: searchTerm,
-                customerId: customerId!,
+                customerName: searchTerm,
+                staffId: staffId!,
             })
         );
     };
@@ -73,15 +73,15 @@ const CustomerTransaction = () => {
 
     const columns: TableColumnsType<ITransaction> = [
         {
-            title: "Staff",
-            dataIndex: "staffName",
-            key: "staffName",
-            width: 300,
-        },
-        {
             title: "Customer",
             dataIndex: "customerName",
             key: "customerName",
+            width: 300,
+        },
+        {
+            title: "Staff",
+            dataIndex: "staffName",
+            key: "staffName",
             width: 300,
         },
         {
@@ -161,4 +161,4 @@ const CustomerTransaction = () => {
     );
 };
 
-export default CustomerTransaction;
+export default StaffTransaction;

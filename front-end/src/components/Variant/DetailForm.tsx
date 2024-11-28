@@ -7,6 +7,8 @@ import { BiSolidMemoryCard } from "react-icons/bi";
 import { FaBarcode, FaMemory } from "react-icons/fa";
 import { IoIosColorPalette } from "react-icons/io";
 import { AiOutlineStock } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../redux/slices/cartSlice";
 
 type TProps = {
     isModalOpen: EModal;
@@ -15,8 +17,10 @@ type TProps = {
     currentProduct: IProduct;
 };
 export default function DetailForm(props: TProps) {
+    const dispatch = useDispatch();
     const [imagesToShow, setImagesToShow] = React.useState<string[]>([]);
     useEffect(() => {
+        console.log(props.currentVariant)
         if (!props.currentVariant) return;
         if (props.isModalOpen == EModal.NONE) {
             return;
@@ -49,6 +53,11 @@ export default function DetailForm(props: TProps) {
         setImagesToShow(updateImages);
     }, [props.currentVariant, props.isModalOpen]);
 
+    const handleAddToCart = () => {
+        if (!props.currentVariant) return;
+        dispatch(addItem(props.currentVariant));
+    };
+
     return (
         <>
             <Modal
@@ -57,6 +66,14 @@ export default function DetailForm(props: TProps) {
                 centered
                 onCancel={props.handleCancel}
                 footer={[
+                    <Button 
+                        key="add-to-cart" 
+                        type="primary" 
+                        onClick={handleAddToCart}
+                        // disabled={!props.currentVariant?.status || props.currentVariant?.quantityInStock === 0}
+                    >
+                        Add to Cart
+                    </Button>,
                     <Button key="back" onClick={props.handleCancel}>
                         Close
                     </Button>,

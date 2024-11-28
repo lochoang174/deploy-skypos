@@ -9,7 +9,6 @@ import {
   Avatar,
   Typography,
   Divider,
-  Collapse,
 } from "antd";
 import usePrivateAxios from "../../hooks/usePrivateAxios";
 import { useAuth } from "../../hooks/useAuth";
@@ -18,15 +17,13 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 const { Title, Text } = Typography;
-const { Panel } = Collapse;
 interface Pros {
   backToFirstStep: () => void;
 }
 const Pay = ({ backToFirstStep }: Pros) => {
   const [amountPaid, setAmountPaid] = useState("");
   const [change, setChange] = useState(0);
-  const [isPaymentEnabled, setIsPaymentEnabled] = useState(true);
-  const [isListExpanded, setIsListExpanded] = useState(false);
+  const [isPaymentEnabled, setIsPaymentEnabled] = useState(false);
   const { auth } = useAuth();
   const { items, total, customer } = useAppSelector((state) => state.cart);
   const [api, contextHolder] = notification.useNotification();
@@ -95,8 +92,6 @@ const Pay = ({ backToFirstStep }: Pros) => {
         ...bodayRequest,
       })
       .then((res) => {
-        setIsListExpanded(true)
-
         openNotification();
         generatePDF();
         dispatch(resestInformation());
@@ -166,40 +161,34 @@ const Pay = ({ backToFirstStep }: Pros) => {
         </div>
 
         <Card className="mt-4">
-          <Collapse
-            activeKey={isListExpanded ? ["1"] : []}
-            onChange={() => setIsListExpanded(!isListExpanded)}
-          >
-            <Panel header={<Title level={3}>List of products</Title>} key="1">
-              <List
-                itemLayout="horizontal"
-                dataSource={items}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar
-                          shape="square"
-                          size={64}
-                          src={`${base_url}${item.variant.Product._id}/${item.variant._id}/${item.variant.images[0]}`}
-                        />
-                      }
-                      title={item.variant.Product.productName}
-                      description={
-                        <div>
-                          <Text>Số lượng: {item.quantity}</Text>
-                          <br />
-                          <Text>
-                            Giá: {item.variant.retailPrice * item.quantity} VND
-                          </Text>
-                        </div>
-                      }
+          <Title level={3}>List of products</Title>
+          <List
+            itemLayout="horizontal"
+            dataSource={items}
+            renderItem={(item) => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={
+                    <Avatar
+                      shape="square"
+                      size={64}
+                      src={`${base_url}${item.variant.Product._id}/${item.variant._id}/${item.variant.images[0]}`}
                     />
-                  </List.Item>
-                )}
-              />
-            </Panel>
-          </Collapse>
+                  }
+                  title={item.variant.Product.productName}
+                  description={
+                    <div>
+                      <Text>Số lượng: {item.quantity}</Text>
+                      <br />
+                      <Text>
+                        Giá: {item.variant.retailPrice * item.quantity} VND
+                      </Text>
+                    </div>
+                  }
+                />
+              </List.Item>
+            )}
+          />
           <Divider />
         </Card>
       </div>

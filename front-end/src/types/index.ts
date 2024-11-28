@@ -17,6 +17,25 @@ export interface IProduct {
     createdAt: Date;
 }
 
+export interface IProductDetail {
+    _id: string;
+    barcode: string;
+    Product: {
+        _id: string,
+        productName: string
+    };
+    retailPrice: number;
+    color: string;
+    ram: number;
+    storage: number;
+}
+
+export interface IProductTransaction {
+    productDetails: IProductDetail;
+    quantity: number;
+    total: number;
+}
+
 export interface IProductPayload {
     products: IProduct[];
     currentPage: number;
@@ -42,6 +61,21 @@ export interface ITransaction {
     totalAmount: Number;
     purchaseDate: Date;
 }
+
+export interface ITransactionDetail {
+    _id: string;
+    staffName: string;
+    Customer: ICustomer;
+    totalAmount: number;
+    amountPaid: number;
+    purchaseDate: Date;
+    refund: number;
+    status: string;
+    products: IProductTransaction[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export interface AccountsPayload {
     staffList: IAccount[];
     currentPage: number;
@@ -71,6 +105,13 @@ export interface TransactionsPayLoad {
     totalTransactions: number;
 }
 
+export interface StaffTransactionsPayload {
+    transactionList: ITransaction[];
+    currentPage: number;
+    totalPages: number;
+    totalTransactions: number;
+    totalRevenue: number;
+}
 export interface IVariant {
     _id: string;
     importPrice: string;

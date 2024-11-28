@@ -7,6 +7,8 @@ import transactionSlice from "./reducer-type/TransactionReducer";
 import cartSlice from "./slices/cartSlice";
 import statisticSlice from "./reducer-type/StatisticReducer";
 import orderSlice from "./reducer-type/OrderReducer";
+import customerTransactionsSlice from "./reducer-type/CustomerTransactionsReducer";
+import staffTransactionsSlice from "./reducer-type/StaffTransactionReducer"
 export const store = configureStore({
     reducer: {
         account: accountSlice,
@@ -17,6 +19,8 @@ export const store = configureStore({
         cart: cartSlice,
         statistic: statisticSlice,
         order: orderSlice,
+        customerTransaction: customerTransactionsSlice,
+        staffTransaction: staffTransactionsSlice
     },
 });
 

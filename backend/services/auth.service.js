@@ -143,7 +143,7 @@ exports.refreshToken = async(req,res)=>{
 
 }
 exports.logout = async(req,res)=>{
-    const {id} = req.body
+    const {id} = req.user
     res.clearCookie('refreshToken');
     await Account.findByIdAndUpdate(id, { refreshToken: null });
     return;

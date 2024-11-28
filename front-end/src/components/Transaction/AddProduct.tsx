@@ -26,7 +26,15 @@ const AddProduct = ({nextStep}:Pros) => {
   const dispatch=useAppDispatch()
   const handleSearch = async (value: string) => {
     try {
-      const response = await axiosPrivate.get(`/variant/search?barcode=${value}`).then((res)=>{
+      let searchUrl;
+      if (/^[0-9]+$/.test(value)) {
+        // If value contains only numbers, search by barcode
+        searchUrl = `/variant/search?barcode=${value}`;
+      } else {
+        // If value contains letters, search by name
+        searchUrl = `/variant/search?name=${value}`;
+      }
+      const response = await axiosPrivate.get(`${searchUrl}`).then((res)=>{
        
         dispatch(addItem(res.data.data as IVariant))
       }).catch((err)=>{
