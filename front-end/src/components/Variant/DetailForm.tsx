@@ -9,6 +9,7 @@ import { IoIosColorPalette } from "react-icons/io";
 import { AiOutlineStock } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../redux/slices/cartSlice";
+import { useAuth } from "../../hooks/useAuth";
 
 type TProps = {
     isModalOpen: EModal;
@@ -19,6 +20,7 @@ type TProps = {
 export default function DetailForm(props: TProps) {
     const dispatch = useDispatch();
     const [imagesToShow, setImagesToShow] = React.useState<string[]>([]);
+    const { auth } = useAuth();
     useEffect(() => {
         console.log(props.currentVariant);
         if (!props.currentVariant) return;
@@ -129,7 +131,7 @@ export default function DetailForm(props: TProps) {
                             <div className=" font-semibold text-base">
                                 Import Price :{" "}
                                 <span className="text-lg font-semibold text-gray-500">
-                                    ${props.currentVariant?.importPrice}
+                                    ${auth?.role === 0 ? props.currentVariant?.importPrice : "N/A"}
                                 </span>
                             </div>
 

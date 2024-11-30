@@ -66,19 +66,19 @@ const Sidebar = () => {
 
         // Logic cho các tuyến đặc biệt
         if (location.pathname.startsWith("/home/variant")) {
-            const variantItem = {
-                to: "/home/variant",
-                text: "Variant",
-                icon: <FaInbox />,
-                disabled: true,
-            };
-            setFilteredItems((prevItems) => {
-                const updatedItems = [...prevItems];
+            // const variantItem = {
+            //     to: "/home/variant",
+            //     text: "Variant",
+            //     icon: <FaInbox />,
+            //     disabled: true,
+            // };
+            // setFilteredItems((prevItems) => {
+            //     const updatedItems = [...prevItems];
 
-                const index = auth?.role === 1 ? 1 : 3;
-                updatedItems[index] = variantItem; // Update the Product item (index 3)
-                return updatedItems;
-            });
+            //     const index = auth?.role === 1 ? 1 : 3;
+            //     updatedItems[index] = variantItem; // Update the Product item (index 3)
+            //     return updatedItems;
+            // });
         } else if (location.pathname.startsWith("/home/detail-transaction")) {
             const detailTransactionItem = {
                 to: "/home/detail-transaction",

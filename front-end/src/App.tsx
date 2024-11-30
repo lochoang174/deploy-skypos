@@ -49,7 +49,7 @@ function App() {
                         </Route>
                         <Route element={<Authorized allowedRoles={[ROLES.Admin, ROLES.STAFF]} />}>
                             <Route path="product" element={<Product />} />
-                            <Route path="variant/product/:id" element={<Variant />} />
+                            <Route path="product/variant/:id" element={<Variant />} />
                         </Route>
                         <Route element={<Authorized allowedRoles={[ROLES.Admin]} />}>
                             <Route path="customer" element={<Customer />} />

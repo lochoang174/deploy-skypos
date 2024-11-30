@@ -198,7 +198,7 @@ const Product = () => {
                         onRow={(record, index) => {
                             return {
                                 onClick: (event) => {
-                                    navigate(`/home/variant/product/${record._id}`, {
+                                    navigate(`/home/product/variant/${record._id}`, {
                                         state: { currentProduct: record },
                                     });
                                 },
