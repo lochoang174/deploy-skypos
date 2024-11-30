@@ -1,6 +1,6 @@
 import { Input } from "antd";
 import { useEffect, useState } from "react";
-import { IoSearchOutline } from "react-icons/io5";
+import { IoArrowBackCircle, IoSearchOutline } from "react-icons/io5";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import useDebounce from "../../hooks/useDebounce"; // Assuming you have a debounce hook
 // import { fetchProducts, setPagination, setSearchTerm } from "../../redux/reducer-type/ProductReducer";
@@ -23,7 +23,13 @@ export function CustomerTransactionHeader() {
     };
 
     return (
-        <div className="pr-5 pl-10 flex items-center justify-between">
+        <div className="pr-5 flex items-center justify-between">
+            <div className="flex flex-1 gap-2">
+                    <IoArrowBackCircle
+                        size={32}
+                        className="cursor-pointer transition-all transform  hover:opacity-70 "
+                        onClick={() => window.history.back()}
+                    />
             <Input
                 placeholder="Search staff from this customer"
                 prefix={<IoSearchOutline />}
@@ -31,6 +37,8 @@ export function CustomerTransactionHeader() {
                 onChange={handleSearchChange}
                 value={search}
             />
+
+            </div>
         </div>
     );
 }
