@@ -16,7 +16,11 @@ export default function CreateForm(props: TProps) {
     const [variantForm] = Form.useForm();
     const axios = usePrivateAxios();
     const dispatch = useAppDispatch();
-    const { totalVariants, pagination } = useAppSelector((state) => state.variant);
+    const { variants, totalVariants, pagination } = useAppSelector((state) => state.variant);
+
+    useEffect(() => {
+        console.log("variants", variants);
+    }, [variants]);
 
     const handleSubmit = async () => {
         const { current, pageSize } = pagination;
@@ -58,14 +62,12 @@ export default function CreateForm(props: TProps) {
                 })
                 .then((res) => {
                     dispatch(addVariant(res.data.data));
+                    if (isLastPageFull && pagination.current !== 1) {
+                        dispatch(setPagination({ page: current! + 1, pageSize: pageSize! }));
+                    }
                 })
                 .catch((err) => {
                     console.error("Error adding variant:", err);
-                })
-                .finally(() => {
-                    if (isLastPageFull) {
-                        dispatch(setPagination({ page: current! + 1, pageSize: pageSize! }));
-                    }
                 });
         }
 

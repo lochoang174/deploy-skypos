@@ -31,22 +31,6 @@ export default function DeleteForm(props: TProps) {
                         categories: [],
                     })
                 );
-            } else if (isLastPage && pagination.current !== 1) {
-                dispatch(
-                    fetchProducts({
-                        axiosInstance: axios,
-                        page: pagination.current! - 1,
-                        limit: pagination.pageSize!,
-                        productName: "",
-                        categories: [],
-                    })
-                );
-                dispatch(
-                    setPagination({
-                        page: pagination.current! - 1,
-                        pageSize: pagination.pageSize!,
-                    })
-                );
             }
             props.handleCancel();
         });

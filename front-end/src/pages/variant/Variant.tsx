@@ -29,6 +29,10 @@ export default function Variant() {
     const [isModalOpen, setIsModalOpen] = useState<EModal>(EModal.NONE);
     const [_id, setId] = useState<string>("");
 
+    // useEffect(() => {
+    //     console.log("variants", variants);
+    // }, [variants]);
+
     const currentVariant = useMemo(() => {
         return variants.find((variant) => variant._id === _id);
     }, [variants, _id]);

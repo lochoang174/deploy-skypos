@@ -70,9 +70,7 @@ export default function BarChart(props: TProps) {
 
     const config = {
         data: detailData,
-        onclick: (e: any) => {
-            console.log(e);
-        },
+
         xField: "date",
         yField: "total",
         colorField: "name",
@@ -85,7 +83,6 @@ export default function BarChart(props: TProps) {
             try {
                 chart.on("element:click", (evt: any) => {
                     const { data } = evt;
-                    console.log("Clicked data:", data?.data); // Access clicked data
                     navigate("/home/detail-transaction", { state: { date: data?.data.date } });
                 });
                 chart.on("afterrender", () => {

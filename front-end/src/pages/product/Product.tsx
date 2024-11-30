@@ -73,14 +73,9 @@ const Product = () => {
                 setLoading(false);
             })
             .catch((err) => {
-                console.error("Error fetching products:", err);
                 setLoading(false);
             });
     }, [dispatch, axios, selectedCategories, searchTerm, pagination]);
-
-    useEffect(() => {
-        console.log("searchTerm", searchTerm);
-    }, [pagination]);
 
     const handleChangePage = (page: number, pageSize: number) => {
         dispatch(setPagination({ page, pageSize }));

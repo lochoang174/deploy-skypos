@@ -16,7 +16,6 @@ export default function UpdateForm(props: TProps) {
     const [variantForm] = Form.useForm();
     const axios = usePrivateAxios();
     const dispatch = useAppDispatch();
-    // const handleSubmit = async (values: any) => {};
 
     useEffect(() => {
         if (props.isModalOpen == EModal.NONE) {
@@ -113,7 +112,6 @@ export default function UpdateForm(props: TProps) {
                 .then((res) => {
                     const Product = props.currentVariant?.Product;
                     res.data.data.Product = Product;
-                    console.log("update variant", res.data.data);
                     dispatch(editVariant(res.data.data));
                     props.handleCancel();
                 });

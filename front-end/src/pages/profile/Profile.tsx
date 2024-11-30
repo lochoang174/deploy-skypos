@@ -127,7 +127,6 @@ export default function Profile() {
                                             src={imageUrl}
                                             icon={<FaUser />}
                                             style={{
-                                                background: "grey",
                                                 width: "100%",
                                                 height: "100%",
                                                 borderRadius: "100%",
@@ -136,9 +135,9 @@ export default function Profile() {
                                             className="cursor-pointer"
                                         />
                                     ) : (
-                                        <img
+                                        <Avatar
                                             src={`${base_url + "/" + auth?.avatar}`}
-                                            alt="avatar"
+                                            icon={<FaUser />}
                                             style={{
                                                 width: "100%",
                                                 height: "100%",

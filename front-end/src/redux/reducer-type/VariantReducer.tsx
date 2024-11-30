@@ -45,7 +45,6 @@ export const fetchVariants = createAsyncThunk<
         const response = await axiosInstance.get("/variant");
         return response.data.data as IVariantPayload;
     } catch (err: any) {
-        console.error("Error:", err);
         return rejectWithValue(err.response?.data || "Error fetching variants");
     }
 });
@@ -64,23 +63,12 @@ export const fecthVariantsByProduct = createAsyncThunk<
             const response = await axiosInstance.get(`/variant/product/${productId}`, {
                 params: { page, limit, barcode, ...filters },
             });
-            console.log("Response:", response.data.data);
             return response.data.data as IVariantPayload;
         } catch (err: any) {
-            console.error("Error:", err);
             return rejectWithValue(err.response?.data || "Error fetching variants");
         }
     }
 );
-
-// export const fetchVariantById = createAsyncThunk<IVariant, { axiosInstance: AxiosInstance; id: string }>(
-//     "variant/fetchVariantById",
-//     async ({ axiosInstance, id }) => {
-//         const response = await axiosInstance.get(`/variant/${id}`);
-//         console.log("Response:", response.data.data);
-//         return response.data.data as IVariant;
-//     }
-// );
 
 const variantSlice = createSlice({
     name: "variant",

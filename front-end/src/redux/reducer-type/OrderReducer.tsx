@@ -26,10 +26,8 @@ export const fetchOrders = createAsyncThunk<IOrderPayload, FetchOrdersParams, { 
             const response = await axiosInstance.get("/statistics/transactions-of-date", {
                 params: { date },
             });
-            console.log("response", response.data);
             return response.data as IOrderPayload;
         } catch (err: any) {
-            console.error("Error:", err);
             return rejectWithValue(err.response?.data || "Error fetching orders");
         }
     }

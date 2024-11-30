@@ -5,6 +5,7 @@ import { IoPhonePortrait } from "react-icons/io5";
 import { MdManageAccounts, MdOutlineLeaderboard } from "react-icons/md";
 import { NavLink, useLocation } from "react-router-dom";
 import { FaInbox } from "react-icons/fa";
+import { useAuth } from "../../hooks/useAuth";
 
 type Item = {
     to: string;
@@ -25,9 +26,21 @@ const Sidebar = () => {
     const location = useLocation();
     const [indicatorStyle, setIndicatorStyle] = useState({});
     const sidebarRef = useRef(null);
+    const { auth } = useAuth();
+
     const [activeItem, setActiveItem] = useState(items);
+    // Filter items based on role
+    const filteredItems = items.filter((item) => {
+        if (auth?.role === 1) {
+            // Only show Dashboard and Transaction for role 1
+            return item.text === "Dashboard" || item.text === "Transaction";
+        }
+        // Show all items for other roles
+        return true;
+    });
+
     useEffect(() => {
-        const activeIndex = items.findIndex((item) => item.to === location.pathname);
+        const activeIndex = filteredItems.findIndex((item) => item.to === location.pathname);
         if (sidebarRef.current && activeIndex !== -1) {
             const sidebarElement = sidebarRef.current as HTMLElement;
             const activeItem = sidebarElement.children[activeIndex] as HTMLElement;
@@ -36,13 +49,13 @@ const Sidebar = () => {
                 height: activeItem.offsetHeight,
             });
         }
-        // Change icon and text for the Variant route
+        // Dynamically adjust items for special routes
         if (location.pathname.startsWith("/home/variant")) {
             const variantItem = {
-                to: "/home/variant", // Adjust based on your route logic
-                text: "Variant", // New text for the variant route
-                icon: <FaInbox />, // New icon for the variant route (choose an appropriate one)
-                disabled: true, // Add a disable property if needed
+                to: "/home/variant",
+                text: "Variant",
+                icon: <FaInbox />,
+                disabled: true,
             };
             setActiveItem((prevItems) => {
                 const updatedItems = [...prevItems];
@@ -51,19 +64,19 @@ const Sidebar = () => {
             });
         } else if (location.pathname.startsWith("/home/detail-transaction")) {
             const detailTransactionItem = {
-                to: "/home/detail-transaction", // Adjust based on your route logic
-                text: "Dashboard", // New text for the variant route
-                icon: <MdOutlineLeaderboard />, // New icon for the variant route (choose an appropriate one)
-                disabled: true, // Add a disable property if needed
+                to: "/home/detail-transaction",
+                text: "Dashboard",
+                icon: <MdOutlineLeaderboard />,
+                disabled: true,
             };
             setActiveItem((prevItems) => {
                 const updatedItems = [...prevItems];
-                updatedItems[0] = detailTransactionItem; // Update the Product item (index 3)
+                updatedItems[0] = detailTransactionItem; // Update the Dashboard item (index 0)
                 return updatedItems;
             });
         } else {
-            // Reset to original items when not on Variant route
-            setActiveItem(items);
+            // Reset to filtered items when not on special routes
+            setActiveItem(filteredItems);
         }
     }, [location]);
 
@@ -80,7 +93,7 @@ const Sidebar = () => {
                 }}
             />
             <div ref={sidebarRef} className="px-4 w-full text-[13px] flex flex-col gap-3">
-                {activeItem.map((item, index) => (
+                {filteredItems.map((item, index) => (
                     <NavLink
                         to={item.to}
                         key={index}

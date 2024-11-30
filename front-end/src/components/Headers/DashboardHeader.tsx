@@ -3,11 +3,6 @@ import { useAppSelector } from "../../redux/hooks";
 
 export function DashboardHeader({ role }: { role: number }) {
     const { statistics, detailData } = useAppSelector((state) => state.statistic);
-
-    useEffect(() => {
-        console.log("Detail Data", detailData);
-        console.log("Statistics", statistics);
-    }, [statistics, detailData]);
     return (
         <div className="flex gap-3 px-5">
             <div className="text-primary-green bg-primary-bg-green rounded-lg p-2 py-1 text-sm w-fit flex items-center gap-2">
