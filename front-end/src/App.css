@@ -1,0 +1,12 @@
+html,
+body {
+    height: 100%;
+    margin: 0; /* Đảm bảo không có khoảng cách mặc định */
+    font-family: "BeauSans";
+}
+
+#root {
+    height: 100%;
+    width: 100%;
+    background-color: #b5c2ca;
+}
