@@ -11,7 +11,7 @@ type Item = {
     to: string;
     text: string;
     icon: React.ReactNode;
-    disabled?: boolean; // Optional disabled property
+    disabled?: boolean;
 };
 
 const items: Item[] = [
@@ -24,23 +24,37 @@ const items: Item[] = [
 
 const Sidebar = () => {
     const location = useLocation();
-    const [indicatorStyle, setIndicatorStyle] = useState({});
     const sidebarRef = useRef(null);
     const { auth } = useAuth();
 
-    const [activeItem, setActiveItem] = useState(items);
-    // Filter items based on role
-    const filteredItems = items.filter((item) => {
+    // Khởi tạo `filteredItems` dựa trên vai trò
+    const [filteredItems, setFilteredItems] = useState<Item[]>(() => {
         if (auth?.role === 1) {
-            // Only show Dashboard and Transaction for role 1
-            return item.text === "Dashboard" || item.text === "Transaction";
+            // Role 1: Show Dashboard, Product, Transaction
+            return items.filter((item) =>
+                ["Dashboard", "Product", "Transaction"].includes(item.text)
+            );
         }
-        // Show all items for other roles
-        return true;
+        // Admin: Show all items
+        return items;
     });
+
+    const [indicatorStyle, setIndicatorStyle] = useState({});
+
+    useEffect(() => {
+        // Lọc lại `filteredItems` khi `auth.role` thay đổi
+        const updatedItems =
+            auth?.role === 1
+                ? items.filter((item) =>
+                      ["Dashboard", "Product", "Transaction"].includes(item.text)
+                  )
+                : items;
+        setFilteredItems(updatedItems);
+    }, [auth]);
 
     useEffect(() => {
         const activeIndex = filteredItems.findIndex((item) => item.to === location.pathname);
+
         if (sidebarRef.current && activeIndex !== -1) {
             const sidebarElement = sidebarRef.current as HTMLElement;
             const activeItem = sidebarElement.children[activeIndex] as HTMLElement;
@@ -49,7 +63,8 @@ const Sidebar = () => {
                 height: activeItem.offsetHeight,
             });
         }
-        // Dynamically adjust items for special routes
+
+        // Logic cho các tuyến đặc biệt
         if (location.pathname.startsWith("/home/variant")) {
             const variantItem = {
                 to: "/home/variant",
@@ -57,9 +72,11 @@ const Sidebar = () => {
                 icon: <FaInbox />,
                 disabled: true,
             };
-            setActiveItem((prevItems) => {
+            setFilteredItems((prevItems) => {
                 const updatedItems = [...prevItems];
-                updatedItems[3] = variantItem; // Update the Product item (index 3)
+
+                const index = auth?.role === 1 ? 1 : 3;
+                updatedItems[index] = variantItem; // Update the Product item (index 3)
                 return updatedItems;
             });
         } else if (location.pathname.startsWith("/home/detail-transaction")) {
@@ -69,28 +86,25 @@ const Sidebar = () => {
                 icon: <MdOutlineLeaderboard />,
                 disabled: true,
             };
-            setActiveItem((prevItems) => {
+            setFilteredItems((prevItems) => {
                 const updatedItems = [...prevItems];
                 updatedItems[0] = detailTransactionItem; // Update the Dashboard item (index 0)
                 return updatedItems;
             });
         } else if (location.pathname.startsWith("/home/staff")) {
             const detailTransactionItem = {
-                to: "/home/staff", //fix here
+                to: "/home/staff",
                 text: "Account",
                 icon: <MdManageAccounts />,
                 disabled: true,
             };
-            setActiveItem((prevItems) => {
+            setFilteredItems((prevItems) => {
                 const updatedItems = [...prevItems];
-                updatedItems[1] = detailTransactionItem;
+                updatedItems[1] = detailTransactionItem; // Update the Dashboard item (index 0)
                 return updatedItems;
             });
-        } else {
-            // Reset to filtered items when not on special routes
-            setActiveItem(filteredItems);
         }
-    }, [location]);
+    }, [location, filteredItems]);
 
     return (
         <div className="relative h-full flex flex-col w-[8-%] gap-5 items-center text-black">
@@ -124,10 +138,10 @@ const Sidebar = () => {
                             pointerEvents: item.disabled ? "none" : "auto",
                         })}
                         className={({ isActive }) =>
-                            `transition-colors duration-300 ease-in-out ${isActive ? "text-white" : "text-black"
+                            `transition-colors duration-300 ease-in-out ${
+                                isActive ? "text-white bg-[#081225]" : "text-black"
                             }`
                         }
-                        aria-hidden="false"
                     >
                         <div className="text-xl">{item.icon}</div>
                         <span className="ml-3">{item.text}</span>

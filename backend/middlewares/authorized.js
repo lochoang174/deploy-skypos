@@ -4,7 +4,7 @@ require("express-async-errors");
 const authorized = (req, res, next) => {
     const roleUrl = {
         1: {
-            GET: ["/api/transaction", "/api/statistics", "/api/variant"],
+            GET: ["/api/transaction", "/api/statistics", "/api/variant", "/api/product"],
             POST: ["/api/transaction"],
             PUT: ["/api/transaction"],
             PATCH: ["/api/transaction"],

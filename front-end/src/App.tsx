@@ -47,7 +47,7 @@ function App() {
                                 element={<StaffTransaction />}
                             />
                         </Route>
-                        <Route element={<Authorized allowedRoles={[ROLES.Admin]} />}>
+                        <Route element={<Authorized allowedRoles={[ROLES.Admin, ROLES.STAFF]} />}>
                             <Route path="product" element={<Product />} />
                             <Route path="variant/product/:id" element={<Variant />} />
                         </Route>

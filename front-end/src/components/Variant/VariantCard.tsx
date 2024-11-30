@@ -11,6 +11,7 @@ import { EModal } from "../../pages/product/Product";
 import { FiEdit } from "react-icons/fi";
 import { FiTrash2 } from "react-icons/fi";
 import DetailForm from "./DetailForm";
+import { useAuth } from "../../hooks/useAuth";
 
 type VariantCardProps = {
     currentProduct: IProduct;
@@ -24,7 +25,7 @@ type VariantCardProps = {
 const VariantCard: React.FC<VariantCardProps> = (props: VariantCardProps) => {
     const [isVisible, setIsVisible] = useState(true);
     // const [isModalOpen, setIsModalOpen] = useState<EModal>(EModal.NONE);
-
+    const { auth } = useAuth();
     // Handle delete with animation
     // const handleDelete = () => {
     //     // Start the delete animation and remove after it's done
@@ -99,7 +100,7 @@ const VariantCard: React.FC<VariantCardProps> = (props: VariantCardProps) => {
                                 {props.variant.retailPrice}
                             </span>
                             <span className="font-bold text-xs text-gray-400">
-                                {props.variant.importPrice}
+                                {auth?.role === 0 ? props.variant.importPrice : "N/A"}
                             </span>
                         </div>
                         <div className="flex pb-4">
