@@ -26,7 +26,8 @@ const LoginByLink = () => {
             setAuth(res.data.data.user)
             console.log(res.data)
         }).catch((err)=>{
-            message.error('Invalid Token. Please try again.');
+            message.error('Expired Token. Please try again.');
+            localStorage.clear()
             console.log(err)
 
         })
