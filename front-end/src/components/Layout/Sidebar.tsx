@@ -74,6 +74,18 @@ const Sidebar = () => {
                 updatedItems[0] = detailTransactionItem; // Update the Dashboard item (index 0)
                 return updatedItems;
             });
+        } else if (location.pathname.startsWith("/home/staff")) {
+            const detailTransactionItem = {
+                to: "/home/staff", //fix here
+                text: "Account",
+                icon: <MdManageAccounts />,
+                disabled: true,
+            };
+            setActiveItem((prevItems) => {
+                const updatedItems = [...prevItems];
+                updatedItems[1] = detailTransactionItem;
+                return updatedItems;
+            });
         } else {
             // Reset to filtered items when not on special routes
             setActiveItem(filteredItems);
@@ -112,8 +124,7 @@ const Sidebar = () => {
                             pointerEvents: item.disabled ? "none" : "auto",
                         })}
                         className={({ isActive }) =>
-                            `transition-colors duration-300 ease-in-out ${
-                                isActive ? "text-white" : "text-black"
+                            `transition-colors duration-300 ease-in-out ${isActive ? "text-white" : "text-black"
                             }`
                         }
                         aria-hidden="false"
